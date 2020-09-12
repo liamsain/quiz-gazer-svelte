@@ -1,0 +1,67 @@
+<script>
+  import { onMount } from "svelte";
+  import { spring } from "svelte/motion";
+  import Calibration from "./Calibration.svelte";
+  import Welcome from './Welcome.svelte';
+
+  const States = {
+    Welcome: 'welcome',
+    Calibration: 'calibration',
+    Quiz: 'quiz'
+  };
+
+  let currentState = States.Welcome;
+
+  let calibrationComplete = false;
+  let x = 0;
+  let y = 0;
+  let eyeCoords = spring(
+    { x: 50, y: 50 },
+    {
+      stiffness: 0.1,
+      damping: 1,
+    }
+  );
+  onMount(async () => {
+    webgazer.params.showVideoPreview = true;
+    await webgazer
+      .setGazeListener(function (data, clock) {
+        if (!data) {
+          return;
+        }
+        eyeCoords.x = data.x;
+        eyeCoords.y = data.y;
+        eyeCoords.set({ x: data.x, y: data.y });
+      })
+      .begin();
+    webgazer.showPredictionPoints(false);
+  });
+</script>
+
+<style>
+  main {
+    height: 100%;
+  }
+ svg {
+    width: 100%;
+    height: 100%;
+  } 
+  circle {
+    fill: #ff3e00;
+  } 
+</style>
+
+<main>
+  {#if currentState === States.Welcome}
+    <Welcome on:next={() => currentState = States.Calibration}/>
+  {/if}
+  {#if currentState === States.Calibration}
+    <Calibration on:calibrationComplete={() => (calibrationComplete = true)} />
+  {/if}
+
+  <!-- {#if calibrationComplete}
+    <svg>
+      <circle cx={$eyeCoords.x} cy={$eyeCoords.y} r={10} />
+    </svg>
+  {/if}-->
+</main>
