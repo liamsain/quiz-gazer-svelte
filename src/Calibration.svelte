@@ -53,9 +53,9 @@
 
   function onCircleClick(circ) {
     circ.radius += radius / 2;
-    if (circ.radius >= radius * 2) {
+    // if (circ.radius >= radius * 2) {
       circ.visible = false;
-    }
+    // }
     if (activeCircles.every((x) => !x.visible)) {
       if (circlesList.length - 1 > 0) {
         circlesList = circlesList.slice(1, circlesList.length);

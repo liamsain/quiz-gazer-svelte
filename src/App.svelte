@@ -2,15 +2,17 @@
   import { onMount } from "svelte";
   import { spring } from "svelte/motion";
   import Calibration from "./Calibration.svelte";
-  import Welcome from './Welcome.svelte';
+  import Welcome from "./Welcome.svelte";
+  import Quiz from "./Quiz.svelte";
 
   const States = {
-    Welcome: 'welcome',
-    Calibration: 'calibration',
-    Quiz: 'quiz'
+    Welcome: "welcome",
+    Calibration: "calibration",
+    Quiz: "quiz",
   };
 
   let currentState = States.Welcome;
+  let webgazerLoading = true;
 
   let calibrationComplete = false;
   let x = 0;
@@ -26,6 +28,7 @@
     webgazer.params.showVideoPreview = true;
     await webgazer
       .setGazeListener(function (data, clock) {
+        webgazerLoading = false;
         if (!data) {
           return;
         }
@@ -42,26 +45,40 @@
   main {
     height: 100%;
   }
- svg {
+  svg {
     width: 100%;
     height: 100%;
-  } 
+  }
   circle {
     fill: #ff3e00;
-  } 
+  }
+  h1 {
+    text-align: center;
+  }
 </style>
 
 <main>
-  {#if currentState === States.Welcome}
-    <Welcome on:next={() => currentState = States.Calibration}/>
+  {#if webgazerLoading}
+    <h1 style="margin-top: 100px;">Loading Webgazer...</h1>
   {/if}
-  {#if currentState === States.Calibration}
-    <Calibration on:calibrationComplete={() => (calibrationComplete = true)} />
+  {#if !webgazerLoading}
+    {#if currentState === States.Welcome}
+      <Welcome on:next={() => (currentState = States.Calibration)} />
+    {/if}
+    {#if currentState === States.Calibration}
+      <Calibration
+        on:calibrationComplete={() => {
+          currentState = States.Quiz;
+        }} />
+    {/if}
+    {#if currentState === States.Quiz}
+      <Quiz eyeX={eyeCoords.x} eyeY={eyeCoords.y} />
+    {/if}
   {/if}
 
-  <!-- {#if calibrationComplete}
+  {#if calibrationComplete}
     <svg>
       <circle cx={$eyeCoords.x} cy={$eyeCoords.y} r={10} />
     </svg>
-  {/if}-->
+  {/if}
 </main>
