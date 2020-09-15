@@ -144,11 +144,10 @@
 
 <style>
   .eye-focus-box {
-    font-size: 44px;
+    font-size: 40px;
     border-radius: 6px;
-    margin-top: 200px;
-    margin: 60px;
-    padding: 200px;
+    margin: 80px;
+    padding: 150px;
     color: white;
     font-weight: bold;
     background: #ffd582;
@@ -162,7 +161,7 @@
   }
   .question-text {
     margin: 0 auto;
-    max-width: 760px;
+    max-width: 660px;
     text-align: center;
     font-size: 36px;
   }
