@@ -15,8 +15,6 @@
   let webgazerLoading = true;
 
   let calibrationComplete = false;
-  let x = 0;
-  let y = 0;
   let eyeCoords = spring(
     { x: 50, y: 50 },
     {
@@ -68,6 +66,7 @@
     {#if currentState === States.Calibration}
       <Calibration
         on:calibrationComplete={() => {
+          calibrationComplete = true;
           currentState = States.Quiz;
         }} />
     {/if}
@@ -76,9 +75,9 @@
     {/if}
   {/if}
 
-  {#if calibrationComplete}
+  <!-- {#if calibrationComplete}
     <svg>
       <circle cx={$eyeCoords.x} cy={$eyeCoords.y} r={10} />
     </svg>
-  {/if}
+  {/if} -->
 </main>
